@@ -4,14 +4,15 @@ import Header from './Header';
 import AddItem from './AddItem';
 import Content from './Content'
 import Footer from './Footer'
-import { useState } from 'react'
-
+import { useState,useEffect } from 'react'
+import SearchItem from './SearchItem';
 function App() {
   const handleNameChange = () =>{
     const names=['Bimal','Navya','Rohan']
     const int =Math.floor(Math.random()*3)
     return names[int]
   }
+ 
 
   // const [items,setItems]=useState([
   //   {
@@ -29,11 +30,17 @@ function App() {
   //       checked:false,
   //       item:"Grape"
   //   },
-
+ 
 // ])
-  const [items,setItems]=useState(JSON.parse(localStorage.getItem('shoppinglist')))
+  const [items,setItems]=useState([])
 
 const [newItem,setNewItem] = useState('')
+const [search,setSearch] = useState("")
+
+useEffect(()=>{
+  // console.log("updating item state")
+  setItems(JSON.parse(localStorage.getItem('shoppinglist')))
+},[])
 
 const setAndSaveItems = (newItems) =>{
   setItems(newItems)
@@ -85,12 +92,16 @@ const addItem =(item)=>{
         <p>{true}</p> cannot render a booleen
       </header> */}
       <Header title="Groceries"/>
+      
       <AddItem 
       newItem={newItem}
       setNewItem={setNewItem}
       handleSubmit={handleSubmit}/>
+      <SearchItem
+      search={search}
+      setSearch={setSearch}/>
       <Content  
-      items={items}  
+      items={items.filter(item=>((item.item).toLowerCase()).includes(search.toLocaleLowerCase()))}  
       handleCheck={handleCheck}
       handleDelete={handleDelete}/>
       <Footer 
